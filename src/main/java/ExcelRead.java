@@ -1,16 +1,11 @@
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 public class ExcelRead {
     public static final String PATH = "D:\\Office\\Project\\poi\\poi\\src\\main\\file\\";
@@ -22,7 +17,8 @@ public class ExcelRead {
     public static void main(String[] args) throws Exception {
         //excel03();
         //excel07();
-        excelDataType03();
+        //excelDataType03();
+        excelFormula03();
     }
 
     /**
@@ -151,4 +147,35 @@ public class ExcelRead {
         input.close();
     }
 
+    /**
+     * 计算公式
+     */
+    public static void excelFormula03() throws Exception{
+        // 获取文件
+        FileInputStream file = new FileInputStream(PATH + "ApachePoiFormula03测试" + EXCEL03);
+        // 初始化对象
+        HSSFWorkbook workbook = new HSSFWorkbook(file);
+        // 获取工作表
+        HSSFSheet sheetAt = workbook.getSheetAt(0);
+        // 获取列
+        HSSFRow row = sheetAt.getRow(4);
+        // 获取单元格
+        HSSFCell cell = row.getCell(0);
+
+        // 初始化公式对象
+        HSSFFormulaEvaluator formulaEvaluator = new HSSFFormulaEvaluator(workbook);
+        // 判断是不是公式对象
+        CellType cellType = cell.getCellType();
+        if (cellType == CellType.FORMULA) {
+            // 获取公式
+            String cellFormula = cell.getCellFormula();
+            System.out.println(cellFormula);
+
+            // 公式开始计算
+            CellValue evaluate = formulaEvaluator.evaluate(cell);
+            // 公式结果接收
+            String s = evaluate.formatAsString();
+            System.out.println(s);
+        }
+    }
 }
